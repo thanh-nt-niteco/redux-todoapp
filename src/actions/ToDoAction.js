@@ -1,14 +1,14 @@
+import {v4} from 'uuid';
 
 export const TODO_ACTIONS = {
     ADD_TODO: 'ADD_TODO',
     TOGGLE_TODO: 'TOGGLE_TODO'
 };
 
-let toDoID = 0;
 export const AddToDoAction = function(text) {
     return {
         type: TODO_ACTIONS.ADD_TODO,
-        id: toDoID++,
+        id: v4(),
         value: text
     };
 }
