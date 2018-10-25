@@ -9,11 +9,13 @@ function addToDo(state, action) {
                 completed: false
             };
         case TODO_ACTIONS.TOGGLE_TODO:
-            return {
-                id: state.id,
-                value: state.value,
-                completed: !state.completed
-            }
+            if(state.id == action.id)
+                return {
+                    id: state.id,
+                    value: state.value,
+                    completed: !state.completed
+                };
+            else return state;
         default:
             return state;
     }
@@ -28,11 +30,7 @@ export default function(state = [], action) {
                 addToDo(null, action)
             ];
         case TODO_ACTIONS.TOGGLE_TODO:
-            return state.map(item => {
-                if(item.id == action.id)
-                    return addToDo(item, action);
-                return item;
-            });
+            return state.map(item => addToDo(item, action));
         default:
             return state;
     }
