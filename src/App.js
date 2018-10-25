@@ -1,21 +1,17 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import AddToDo from './components/AddToDo';
-import ToDoList from './components/ToDoList';
-import FilterLinks from './components/FilterLinks';
-
-import {Provider} from 'react-redux';
 import createStore from './createStore';
+import HomePage from './pages/HomePage';
 
 class App extends Component {
   render() {
     return (
         <Provider store={createStore()}>
-          <div>
-            <AddToDo />
-            <ToDoList />
-            <FilterLinks />
-          </div>
+          <Router>
+            <Route path="/" component={HomePage} />
+          </Router>
         </Provider>
     );
   }
