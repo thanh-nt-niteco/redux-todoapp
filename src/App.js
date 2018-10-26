@@ -10,7 +10,7 @@ class App extends Component {
     return (
         <Provider store={createStore()}>
           <Router>
-            <Route path="/" component={HomePage} />
+            <Route path='/:filter?' component={HomePage} />
           </Router>
         </Provider>
     );

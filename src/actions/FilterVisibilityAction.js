@@ -2,9 +2,9 @@
 export const FILTER_ACTION = "FILTER_VISIBILITY";
 
 export const FILTERS = {
-    SHOW_ALL: 'SHOW_ALL',
-    ACTIVATE: 'ACTIVATE',
-    COMPLETED: 'COMPLETED'
+    SHOW_ALL: 'all',
+    ACTIVATE: 'active',
+    COMPLETED: 'completed'
 };
 
 

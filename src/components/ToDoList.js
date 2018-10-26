@@ -31,9 +31,9 @@ class ToDoList extends Component {
   }
 }
 
-export default connect((state) => {
+export default connect((state, ownProps) => {
   return {
-    todos: getVisualTodos(state.todos, state.filter)
+    todos: getVisualTodos(state.todos, ownProps.filter)
   };
 }, {
   onToggleItem: ToggleToDoAction

@@ -1,27 +1,29 @@
+//import { connect } from 'react-redux';
+//import Link from './Link';
+//import {FilterVisibility} from '../actions/FilterVisibilityAction';
+
+// export default connect((state, ownProps) => {
+//   return {
+//       active: state.filter === ownProps.filter
+//   };
+// }, {
+//   onClick: FilterVisibility
+// })(FilterLink);
+
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import {FilterVisibility} from '../actions/FilterVisibilityAction';
+import { Link } from 'react-router-dom';
 
-
-class FilterLink extends Component {
+export default class FilerLink extends Component {
   render() {
-    const {active, filter, onClick} = this.props;
-    if(active) {
-        return (<span>{this.props.children}</span>);
-    }
+    const {filter, children} = this.props;
 
     return (
-      <a href="#" onClick={(event)=> {event.preventDefault(); onClick(filter)}}>
-        {this.props.children}
-      </a>
+      <Link 
+        to={filter === 'all' ? '' : filter}
+      >
+        {children}
+      </Link>
     );
   }
 }
 
-export default connect((state, ownProps) => {
-    return {
-        active: state.filter === ownProps.filter
-    };
-}, {
-  onClick: FilterVisibility
-})(FilterLink);
