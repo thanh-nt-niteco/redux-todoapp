@@ -1,8 +1,8 @@
 
 import {createStore} from 'redux';
 import Reducer from './reducers';
-import {loadState, saveState} from './services/localStorage';
-import throttle from 'lodash/throttle';
+//import {loadState, saveState} from './services/localStorage';
+//import throttle from 'lodash/throttle';
 
 const addLoggingToDispatch = function(store) {
     const rawDispatch = store.dispatch;
@@ -22,16 +22,17 @@ const addLoggingToDispatch = function(store) {
 }
 
 export default function() {
-    const persistedState = loadState();
-    const store = createStore(Reducer, persistedState);
+    //const persistedState = loadState();
+    //const store = createStore(Reducer, persistedState);
+    const store = createStore(Reducer);
 
     store.dispatch = addLoggingToDispatch(store);
 
-    store.subscribe(throttle(() => {
-        saveState({
-            todos: store.getState().todos
-        });
-    }, 1000));
+    // store.subscribe(throttle(() => {
+    //     saveState({
+    //         todos: store.getState().todos
+    //     });
+    // }, 1000));
 
     return store;
 }
