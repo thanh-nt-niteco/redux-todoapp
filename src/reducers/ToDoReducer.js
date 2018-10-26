@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux';
 import {TODO_ACTIONS} from '../actions/ToDoAction';
 import {FILTERS} from '../actions/FilterVisibilityAction';
 
@@ -22,30 +23,46 @@ function addToDo(state, action) {
     }
 }
 
-
-export default function(state = [], action) {
+const byIds = (state = {}, action) => {
     switch (action.type) {
         case TODO_ACTIONS.ADD_TODO:
-            return [
-                ...state,
-                addToDo(null, action)
-            ];
         case TODO_ACTIONS.TOGGLE_TODO:
-            return state.map(item => addToDo(item, action));
+            return Object.assign({}, state, {
+                [action.id]: addToDo(state[action.id], action)
+            });
         default:
             return state;
     }
 }
 
+const allIds = (state = [], action) => {
+    switch (action.type) {
+        case TODO_ACTIONS.ADD_TODO:
+            return [...state, action.id];
+        default:
+            return state;
+    }
+}
+
+const getAllTodos = (state) => {
+    return state.allIds.map(id => state.byIds[id]);
+}
+
+export default combineReducers({
+    byIds,
+    allIds
+});
+
 export const getVisualTodos = function(state, filter) {
+    const allTodos = getAllTodos(state);
     switch(filter) {
       case FILTERS.SHOW_ALL:
-        return state;
+        return allTodos;
       case FILTERS.ACTIVATE:
-        return state.filter(todo => !todo.completed);
+        return allTodos.filter(todo => !todo.completed);
       case FILTERS.COMPLETED:
-        return state.filter(todo => todo.completed);
+        return allTodos.filter(todo => todo.completed);
       default: 
-        return state;
+        return allTodos;
     }
 }
