@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import ToDoItem from './ToDoItem';
 import {ToggleToDoAction} from '../actions/ToDoAction';
 import {FILTERS} from '../actions/FilterVisibilityAction';
@@ -31,10 +32,10 @@ class ToDoList extends Component {
   }
 }
 
-export default connect((state, ownProps) => {
+export default withRouter(connect((state, {match}) => {
   return {
-    todos: getVisualTodos(state.todos, ownProps.filter)
+    todos: getVisualTodos(state.todos, match.params.filter || FILTERS.SHOW_ALL)
   };
 }, {
   onToggleItem: ToggleToDoAction
-})(ToDoList);
+})(ToDoList));
