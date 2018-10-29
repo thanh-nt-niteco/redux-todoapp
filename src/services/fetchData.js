@@ -18,6 +18,10 @@ const fakeDatabase = {
             id: v4(),
             text: 'task 4',
             completed: false,
+        },{
+            id: v4(),
+            text: 'task 5',
+            completed: true,
         },
     ]
 };
