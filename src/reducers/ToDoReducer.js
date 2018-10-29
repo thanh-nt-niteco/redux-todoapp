@@ -25,44 +25,65 @@ function addToDo(state, action) {
 
 const byIds = (state = {}, action) => {
     switch (action.type) {
-        case TODO_ACTIONS.ADD_TODO:
-        case TODO_ACTIONS.TOGGLE_TODO:
-            return Object.assign({}, state, {
-                [action.id]: addToDo(state[action.id], action)
+        case TODO_ACTIONS.RECEIVE_TODOS:
+            const nextState = Object.assign({}, state);
+            action.response.forEach(todo => {
+                nextState[todo.id] = todo;
             });
+            return nextState;
         default:
             return state;
     }
 }
 
 const allIds = (state = [], action) => {
+    if(action.filter != FILTERS.SHOW_ALL)
+        return state;
+
     switch (action.type) {
-        case TODO_ACTIONS.ADD_TODO:
-            return [...state, action.id];
+        case TODO_ACTIONS.RECEIVE_TODOS:
+            return action.response.map(todo => todo.id);
         default:
             return state;
     }
 }
 
-const getAllTodos = (state) => {
-    return state.allIds.map(id => state.byIds[id]);
+const activeIds = (state = [], action) => {
+    if(action.filter != FILTERS.ACTIVATE)
+        return state;
+        
+    switch (action.type) {
+        case TODO_ACTIONS.RECEIVE_TODOS:
+            return action.response.map(todo => todo.id);
+        default:
+            return state;
+    }
 }
+
+const completedIds = (state = [], action) => {
+    if(action.filter != FILTERS.COMPLETED)
+        return state;
+        
+    switch (action.type) {
+        case TODO_ACTIONS.RECEIVE_TODOS:
+            return action.response.map(todo => todo.id);
+        default:
+            return state;
+    }
+}
+
+const idsByFilter = combineReducers({
+    [FILTERS.SHOW_ALL]: allIds,
+    [FILTERS.ACTIVATE]: activeIds,
+    [FILTERS.COMPLETED]: completedIds
+});
 
 export default combineReducers({
     byIds,
-    allIds
+    idsByFilter
 });
 
 export const getVisualTodos = function(state, filter) {
-    const allTodos = getAllTodos(state);
-    switch(filter) {
-      case FILTERS.SHOW_ALL:
-        return allTodos;
-      case FILTERS.ACTIVATE:
-        return allTodos.filter(todo => !todo.completed);
-      case FILTERS.COMPLETED:
-        return allTodos.filter(todo => todo.completed);
-      default: 
-        return allTodos;
-    }
+    const ids = state.idsByFilter[filter];
+    return ids.map(id => state.byIds[id]);
 }
