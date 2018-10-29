@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import ToDoItem from './ToDoItem';
-import {ToggleToDoAction, ReceiveTodos} from '../actions/ToDoAction';
+import {ToggleToDoAction, fetchTodos} from '../actions/ToDoAction';
 import {getVisualTodos} from '../reducers';
 import {FILTERS} from '../actions/FilterVisibilityAction';
-
-import { fetchToDos } from '../services/fetchData';
 
 const mapStateToProps = (state, {match}) => {
   const filter = match.params.filter || FILTERS.SHOW_ALL;
@@ -43,10 +41,8 @@ class VisibleToDoList extends Component {
   }
 
   fetchData() {
-    const {filter, receiveTodos} = this.props;
-    fetchToDos(filter).then(todos => {
-      receiveTodos(filter, todos);
-    })
+    const {filter, fetchTodos} = this.props;
+    fetchTodos(filter);
   }
 
   render () {
@@ -59,5 +55,5 @@ class VisibleToDoList extends Component {
 export default VisibleToDoList = withRouter(connect(
   mapStateToProps, {
   onToggleItem: ToggleToDoAction,
-  receiveTodos: ReceiveTodos
+  fetchTodos
 })(VisibleToDoList));

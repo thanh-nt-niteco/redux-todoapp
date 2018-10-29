@@ -1,4 +1,5 @@
 import {v4} from 'uuid';
+import { fetchToDos } from '../services/fetchData';
 
 export const TODO_ACTIONS = {
     ADD_TODO: 'ADD_TODO',
@@ -21,10 +22,16 @@ export const ToggleToDoAction = function(id) {
     }
 }
 
-export const ReceiveTodos = function(filter, todos) {
+const ReceiveTodos = function(filter, todos) {
     return {
         type: TODO_ACTIONS.RECEIVE_TODOS,
         filter,
         response: todos
     }
+}
+
+export const fetchTodos = function(filter) {
+    return fetchToDos(filter).then(response => {
+        return ReceiveTodos(filter, response);
+    });
 }
