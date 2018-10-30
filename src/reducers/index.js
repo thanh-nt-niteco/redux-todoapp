@@ -1,13 +1,20 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
+import {FILTERS} from '../actions/FilterVisibilityAction';
+import byId, * as fromById from './byId';
+import createList, * as fromList from './createList';
 
-import ToDoReducer, * as toDoReducer from './ToDoReducer';
-import FilterVisibility from './FilterVisibilityReducer';
+const listByFilter = combineReducers({
+    [FILTERS.SHOW_ALL]: createList(FILTERS.SHOW_ALL),
+    [FILTERS.ACTIVATE]: createList(FILTERS.ACTIVATE),
+    [FILTERS.COMPLETED]: createList(FILTERS.COMPLETED)
+});
 
 export default combineReducers({
-    todos: ToDoReducer,
-    filter: FilterVisibility
+    byId,
+    listByFilter
 });
 
 export const getVisualTodos = function(state, filter) {
-    return toDoReducer.getVisualTodos(state.todos, filter);
+    const ids = fromList.getIds(state.listByFilter[filter]);
+    return ids.map(id => fromById.getTodo(state.byId, id));
 }
