@@ -31,13 +31,15 @@ const ReceiveTodos = function(filter, todos) {
     }
 }
 
-export const fetchTodos = function(filter) {
-    return fetchToDos(filter).then(response => {
-        return ReceiveTodos(filter, response);
-    });
-}
-
-export const requestTodos = (filter) => ({
+const requestTodos = (filter) => ({
     type: TODO_ACTIONS.REQUEST_TODOS,
     filter
 });
+
+export const fetchTodos = (filter) => (dispatch) => {
+    dispatch(requestTodos(filter));
+
+    return fetchToDos(filter).then(response => {
+        return dispatch(ReceiveTodos(filter, response));
+    });
+}
