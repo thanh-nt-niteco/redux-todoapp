@@ -1,20 +1,21 @@
-import {v4} from 'uuid';
-import { fetchToDos } from '../services/fetchData';
+import { fetchToDos, addToDo } from '../services/fetchData';
 import { getIsFetching } from '../reducers';
 
 export const TODO_ACTIONS = {
     ADD_TODO: 'ADD_TODO',
     TOGGLE_TODO: 'TOGGLE_TODO',
-    RECEIVE_TODOS: 'RECEIVE_TODOS',
-    REQUEST_TODOS: 'REQUEST_TODOS'
+    FETCH_TODOS_REQUEST: 'FETCH_TODOS_REQUEST',
+    FETCH_TODOS_SUCCESS: 'FETCH_TODOS_SUCCESS',
+    FETCH_TODOS_FAIL: 'FETCH_TODOS_FAIL',
 };
 
-export const AddToDoAction = function(text) {
-    return {
-        type: TODO_ACTIONS.ADD_TODO,
-        id: v4(),
-        value: text
-    };
+export const AddToDoAction = (text) => (dispatch) => {
+    addToDo(text).then(todo => {
+        return dispatch({
+            type: TODO_ACTIONS.ADD_TODO,
+            todo
+        });
+    });
 }
 
 export const ToggleToDoAction = function(id) {
@@ -24,18 +25,26 @@ export const ToggleToDoAction = function(id) {
     }
 }
 
-const ReceiveTodos = function(filter, todos) {
+const requestTodos = (filter) => ({
+    type: TODO_ACTIONS.FETCH_TODOS_REQUEST,
+    filter
+});
+
+const fetchTodosSuccess = function(filter, todos) {
     return {
-        type: TODO_ACTIONS.RECEIVE_TODOS,
+        type: TODO_ACTIONS.FETCH_TODOS_SUCCESS,
         filter,
         response: todos
     }
 }
 
-const requestTodos = (filter) => ({
-    type: TODO_ACTIONS.REQUEST_TODOS,
-    filter
-});
+const requestTodosFail = (filter, message) => {
+    return {
+        type: TODO_ACTIONS.FETCH_TODOS_FAIL,
+        filter,
+        message
+    }
+}
 
 export const fetchTodos = (filter) => (dispatch, getState) => {
     if(getIsFetching(getState(), filter))
@@ -44,6 +53,8 @@ export const fetchTodos = (filter) => (dispatch, getState) => {
     dispatch(requestTodos(filter));
 
     return fetchToDos(filter).then(response => {
-        return dispatch(ReceiveTodos(filter, response));
+        return dispatch(fetchTodosSuccess(filter, response));
+    }, error => {
+        return dispatch(requestTodosFail(filter, error.message || 'Something went wrong!'));
     });
 }

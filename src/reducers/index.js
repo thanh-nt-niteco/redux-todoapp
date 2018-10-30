@@ -22,3 +22,7 @@ export const getVisualTodos = function(state, filter) {
 export const getIsFetching = function(state, filter) {
     return fromList.getIsFetching(state.listByFilter[filter]);
 }
+
+export const getErrorMessage = function(state, filter) {
+    return fromList.getErrorMessage(state.listByFilter[filter]);
+}

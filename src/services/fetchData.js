@@ -32,6 +32,10 @@ const delay = (ms) => {
 
 export const fetchToDos = (filter) => {
     return delay(500).then(() => {
+        if(Math.random() > 0.5) {
+            throw new Error("Boom !");
+        }
+
         switch (filter) {
             case FILTERS.SHOW_ALL:
                 return fakeDatabase.todos;
@@ -42,5 +46,19 @@ export const fetchToDos = (filter) => {
             default:
                 throw new Error(`Unknown filter: ${filter}`);
         }
+    });
+}
+
+export const addToDo = (text) => {
+    return delay(500).then(() => {
+        const todo = {
+            id: v4(),
+            value: text,
+            completed: false
+        };
+
+        fakeDatabase.todos.push(todo);
+
+        return todo;
     });
 }

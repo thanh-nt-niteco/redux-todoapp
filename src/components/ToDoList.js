@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import ToDoItem from './ToDoItem';
 import {ToggleToDoAction, fetchTodos} from '../actions/ToDoAction';
-import {getVisualTodos, getIsFetching} from '../reducers';
+import {getVisualTodos, getIsFetching, getErrorMessage} from '../reducers';
 import {FILTERS} from '../actions/FilterVisibilityAction';
+import ErrorMessage from './ErrorMessage';
 
 const mapStateToProps = (state, {match}) => {
   const filter = match.params.filter || FILTERS.SHOW_ALL;
@@ -12,6 +13,7 @@ const mapStateToProps = (state, {match}) => {
   return {
     todos: getVisualTodos(state, filter),
     isFetching: getIsFetching(state, filter),
+    errorMessage: getErrorMessage(state, filter),
     filter: filter 
   };
 };
@@ -47,7 +49,14 @@ class VisibleToDoList extends Component {
   }
 
   render () {
-    const {onToggleItem, todos, isFetching} = this.props;
+    const {onToggleItem, todos, isFetching, errorMessage} = this.props;
+
+    if(errorMessage && !todos.length) {
+      return (
+        <ErrorMessage message={errorMessage} onRetry={() => this.fetchData()} />
+      );
+    }
+
     if(isFetching && !todos.length) {
       return (
         <p>Loading...</p>
