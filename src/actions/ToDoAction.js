@@ -1,5 +1,6 @@
 import {v4} from 'uuid';
 import { fetchToDos } from '../services/fetchData';
+import { getIsFetching } from '../reducers';
 
 export const TODO_ACTIONS = {
     ADD_TODO: 'ADD_TODO',
@@ -36,7 +37,10 @@ const requestTodos = (filter) => ({
     filter
 });
 
-export const fetchTodos = (filter) => (dispatch) => {
+export const fetchTodos = (filter) => (dispatch, getState) => {
+    if(getIsFetching(getState(), filter))
+        return Promise.resolve();
+
     dispatch(requestTodos(filter));
 
     return fetchToDos(filter).then(response => {

@@ -1,15 +1,16 @@
 
 import {createStore, applyMiddleware} from 'redux';
 import logger from 'redux-logger';
+import thunk from 'redux-thunk';
 import Reducer from './reducers';
 //import {loadState, saveState} from './services/localStorage';
 //import throttle from 'lodash/throttle';
 
-const thunk = (store) => (next) => (action) => {
-    if(typeof action === 'function')
-        return action(store.dispatch);
-    return next(action);
-}
+// const thunk = (store) => (next) => (action) => {
+//     if(typeof action === 'function')
+//         return action(store.dispatch, store.getState);
+//     return next(action);
+// }
 
 export default function() {
     //const persistedState = loadState();
