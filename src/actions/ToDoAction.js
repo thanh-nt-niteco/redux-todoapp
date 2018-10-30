@@ -4,7 +4,8 @@ import { fetchToDos } from '../services/fetchData';
 export const TODO_ACTIONS = {
     ADD_TODO: 'ADD_TODO',
     TOGGLE_TODO: 'TOGGLE_TODO',
-    RECEIVE_TODOS: 'RECEIVE_TODOS'
+    RECEIVE_TODOS: 'RECEIVE_TODOS',
+    REQUEST_TODOS: 'REQUEST_TODOS'
 };
 
 export const AddToDoAction = function(text) {
@@ -35,3 +36,8 @@ export const fetchTodos = function(filter) {
         return ReceiveTodos(filter, response);
     });
 }
+
+export const requestTodos = (filter) => ({
+    type: TODO_ACTIONS.REQUEST_TODOS,
+    filter
+});

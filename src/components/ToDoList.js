@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import ToDoItem from './ToDoItem';
-import {ToggleToDoAction, fetchTodos} from '../actions/ToDoAction';
-import {getVisualTodos} from '../reducers';
+import {ToggleToDoAction, fetchTodos, requestTodos} from '../actions/ToDoAction';
+import {getVisualTodos, getIsFetching} from '../reducers';
 import {FILTERS} from '../actions/FilterVisibilityAction';
 
 const mapStateToProps = (state, {match}) => {
@@ -11,6 +11,7 @@ const mapStateToProps = (state, {match}) => {
 
   return {
     todos: getVisualTodos(state, filter),
+    isFetching: getIsFetching(state, filter),
     filter: filter 
   };
 };
@@ -41,13 +42,23 @@ class VisibleToDoList extends Component {
   }
 
   fetchData() {
-    const {filter, fetchTodos} = this.props;
+    const {filter, fetchTodos, requestTodos} = this.props;
+    requestTodos(filter);
     fetchTodos(filter);
   }
 
   render () {
+    const {onToggleItem, todos, isFetching} = this.props;
+    if(isFetching && !todos.length) {
+      return (
+        <p>Loading...</p>
+      );
+    }
     return (
-      <ToDoList {...this.props}/>
+      <ToDoList
+        onToggleItem = {onToggleItem}
+        todos = {todos}
+      />
     );
   }
 }
@@ -55,5 +66,6 @@ class VisibleToDoList extends Component {
 export default VisibleToDoList = withRouter(connect(
   mapStateToProps, {
   onToggleItem: ToggleToDoAction,
-  fetchTodos
+  fetchTodos,
+  requestTodos
 })(VisibleToDoList));
