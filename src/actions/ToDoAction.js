@@ -1,3 +1,5 @@
+import { normalize } from 'normalizr';
+import * as schema from './schema';
 import { fetchToDos, addToDo } from '../services/fetchData';
 import { getIsFetching } from '../reducers';
 
@@ -11,9 +13,9 @@ export const TODO_ACTIONS = {
 
 export const AddToDoAction = (text) => (dispatch) => {
     addToDo(text).then(todo => {
-        return dispatch({
+        dispatch({
             type: TODO_ACTIONS.ADD_TODO,
-            todo
+            response: normalize(todo, schema.todo)
         });
     });
 }
@@ -53,8 +55,8 @@ export const fetchTodos = (filter) => (dispatch, getState) => {
     dispatch(requestTodos(filter));
 
     return fetchToDos(filter).then(response => {
-        return dispatch(fetchTodosSuccess(filter, response));
+        dispatch(fetchTodosSuccess(filter, normalize(response, schema.arrayOfTodos)));
     }, error => {
-        return dispatch(requestTodosFail(filter, error.message || 'Something went wrong!'));
+        dispatch(requestTodosFail(filter, error.message || 'Something went wrong!'));
     });
 }
