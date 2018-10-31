@@ -4,12 +4,21 @@ import {TODO_ACTIONS} from '../actions/ToDoAction';
 import {FILTERS} from '../actions/FilterVisibilityAction';
 
 const createList = (filter) => {
+    const handleToggle = (state, action) => {
+        const {result: toggleId, entities} = action.response;
+        const {completed} = entities.todos[toggleId];
+        const shouldRemove = (completed && filter === FILTERS.ACTIVATE) || (!completed && filter === FILTERS.COMPLETED);
+        return shouldRemove ? state.filter(id => id !== toggleId) : state;
+    }
+
     const ids = (state = [], action) => {
         switch (action.type) {
             case TODO_ACTIONS.FETCH_TODOS_SUCCESS:
                 return filter === action.filter ? action.response.result : state;
             case TODO_ACTIONS.ADD_TODO:
                 return  filter !== FILTERS.COMPLETED ? [...state, action.response.result] : state;
+            case TODO_ACTIONS.TOGGLE_TODO:
+                handleToggle(state, action);
             default:
                 return state;
         }

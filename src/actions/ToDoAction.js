@@ -1,6 +1,6 @@
 import { normalize } from 'normalizr';
 import * as schema from './schema';
-import { fetchToDos, addToDo } from '../services/fetchData';
+import { fetchToDos, addToDo, toggleTodo } from '../services/fetchData';
 import { getIsFetching } from '../reducers';
 
 export const TODO_ACTIONS = {
@@ -20,11 +20,13 @@ export const AddToDoAction = (text) => (dispatch) => {
     });
 }
 
-export const ToggleToDoAction = function(id) {
-    return {
-        type: TODO_ACTIONS.TOGGLE_TODO,
-        id
-    }
+export const ToggleToDoAction = (id) => (dispatch) => {
+    toggleTodo(id).then((todo) => {
+        dispatch({
+            type: TODO_ACTIONS.TOGGLE_TODO,
+            response: normalize(todo, schema.todo)
+        });
+    });
 }
 
 const requestTodos = (filter) => ({

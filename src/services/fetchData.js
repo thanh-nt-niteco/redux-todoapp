@@ -32,7 +32,7 @@ const delay = (ms) => {
 
 export const fetchToDos = (filter) => {
     return delay(500).then(() => {
-        if(Math.random() > 0.5) {
+        if(Math.random() > 0.75) {
             throw new Error("Boom !");
         }
 
@@ -60,5 +60,16 @@ export const addToDo = (text) => {
         fakeDatabase.todos.push(todo);
 
         return todo;
+    });
+}
+
+export const toggleTodo = (id) => {
+    return delay(500).then(() => {
+        for(let i=0; i<fakeDatabase.todos.length; i++) {
+            if(fakeDatabase.todos[i].id === id) {
+                fakeDatabase.todos[i].completed = !fakeDatabase.todos[i].completed;
+                return fakeDatabase.todos[i];
+            }
+        }
     });
 }
